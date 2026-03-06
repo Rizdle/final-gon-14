@@ -8,6 +8,8 @@ export const findUserByUname = async (username) => {
 };
 
 export const createUser = async (username, hashPassword, specialization) => {
+  console.log(username, hashPassword, specialization);
+
   const newDoc = await prisma.doctor.create({
     data: {
       username,

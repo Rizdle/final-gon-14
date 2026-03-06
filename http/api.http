@@ -5,7 +5,7 @@ post {{BASE_URL}}/auth/register/doctor
 Content-Type: application/json
 
 {
-  "username": "jojo9",
+  "username": "jojo34",
   "password": "123456",
   "specialization": "Cardiologist"
 }
@@ -16,6 +16,6 @@ POST {{BASE_URL}}/auth/register/user
 Content-Type: application/json
 
 {
-  "username": "gogo",
-  "password": "123456",
+  "username": "gogo2",
+  "password": "123456"
 }

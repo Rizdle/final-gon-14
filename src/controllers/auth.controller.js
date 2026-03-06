@@ -1,5 +1,10 @@
 import createError from "http-errors";
-import { findUserByUname, findUserByUser } from "../services/auth.service.js";
+import {
+  findUserByUname,
+  findUserByUser,
+  createUser,
+  createNewUser,
+} from "../services/auth.service.js";
 import bcrypt from "bcrypt";
 
 export async function registerDocCTRL(req, res, next) {
@@ -31,7 +36,7 @@ export async function registerDocCTRL(req, res, next) {
 ///////////////////////////////////////////////////////////////
 
 export async function registerUserCTRL(req, res, next) {
-  const { username, password } = req.body;
+  console.log(username, password);
   try {
     const doc = await findUserByUser(username);
     if (doc) {
