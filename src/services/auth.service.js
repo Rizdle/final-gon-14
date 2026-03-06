@@ -55,9 +55,17 @@ export const createToken = async (user) => {
   return token;
 };
 
-export const findUserById = async (id) => {
-  const user = await prisma.user.findFirst({
-    where: { id: id },
+export const findUByUser = async (username) => {
+  const userI = await prisma.user.findFirst({
+    where: { username: username },
   });
-  return user;
+  return userI;
+};
+//////////////////////////////////////////////////////////////
+
+export const finddocById = async (username) => {
+  const DocI = await prisma.doctor.findFirst({
+    where: { username: username },
+  });
+  return DocI;
 };

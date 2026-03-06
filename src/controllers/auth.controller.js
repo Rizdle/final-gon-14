@@ -6,6 +6,7 @@ import {
   createUser,
   createNewUser,
   createToken,
+  findUByUser,
 } from "../services/auth.service.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -38,8 +39,9 @@ export async function registerDocCTRL(req, res, next) {
 
 export async function registerUserCTRL(req, res, next) {
   try {
-    const doc = await findUserByUser(username);
-    if (doc) {
+    const { username, password } = req.body;
+    const User = await findUserByUser(username);
+    if (User) {
       throw createError(400, "email already exist");
     }
     const hashPassword = await bcrypt.hash(password, 5);
@@ -64,6 +66,33 @@ export async function loginController(req, res, next) {
   console.log(req.body);
   try {
     const user = await findUserByUname(username);
+    console.log(user);
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!user || !isMatch) {
+      throw createError(401, "Invalid credentials");
+    }
+    const token = await createToken(user);
+    res.status(201).json({
+      message: "Login Success",
+      token: token,
+      user: {
+        username: user.username,
+        password: user.password,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+export async function loginUserController(req, res, next) {
+  const { username, password } = req.body;
+  console.log(req.body);
+  try {
+    const user = await findUByUser(username);
     console.log(user);
     const isMatch = await bcrypt.compare(password, user.password);
 
