@@ -1,0 +1,21 @@
+@BASE_URL = http://localhost:8888
+
+### regis doc
+post {{BASE_URL}}/auth/register/doctor
+Content-Type: application/json
+
+{
+  "username": "jojo9",
+  "password": "123456",
+  "specialization": "Cardiologist"
+}
+
+
+### regis user
+POST {{BASE_URL}}/auth/register/user
+Content-Type: application/json
+
+{
+  "username": "gogo",
+  "password": "123456",
+}

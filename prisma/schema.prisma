@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Doctor {
+  id             Int    @id @default(autoincrement())
+  username       String @unique
+  password       String
+  specialization String
+
+  doctornote DoctorNote[]
+}
+
+model User {
+  id             Int           @id @default(autoincrement())
+  username       String        @unique
+  password       String
+  doctornote     DoctorNote[]
+  healthRecord   HealthRecord? @relation(fields: [healthRecordId], references: [id])
+  healthRecordId Int?
+}
+
+model DoctorNote {
+  id        Int      @id @default(autoincrement())
+  doctorId  Int
+  userId    Int
+  note      String
+  createdAt DateTime @default(now())
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model HealthRecord {
+  id     Int      @id @default(autoincrement())
+  userId Int
+  type   String
+  value  String
+  date   DateTime @default(now())
+  users  User[]
+}
