@@ -1,9 +1,12 @@
 import { prisma } from "../config/prismaClient.js";
+import jwt from "jsonwebtoken";
 
 export const findUserByUname = async (username) => {
+  console.log(username);
   const doc = await prisma.doctor.findFirst({
     where: { username: username },
   });
+  console.log(doc);
   return doc;
 };
 
@@ -37,4 +40,24 @@ export const createNewUser = async (username, hashPassword) => {
     },
   });
   return newUser;
+};
+
+/////////////////////////////////////////////////////////////////
+export const createToken = async (user) => {
+  const payload = {
+    username: user.username,
+    password: user.password,
+  };
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    algorithm: "HS256",
+    expiresIn: "1d",
+  });
+  return token;
+};
+
+export const findUserById = async (id) => {
+  const user = await prisma.user.findFirst({
+    where: { id: id },
+  });
+  return user;
 };

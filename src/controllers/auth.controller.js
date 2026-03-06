@@ -1,11 +1,14 @@
-import createError from "http-errors";
+import createHttpError from "http-errors";
+import { prisma } from "../config/prismaClient.js";
 import {
   findUserByUname,
   findUserByUser,
   createUser,
   createNewUser,
+  createToken,
 } from "../services/auth.service.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export async function registerDocCTRL(req, res, next) {
   const { username, password, specialization } = req.body;
@@ -31,12 +34,9 @@ export async function registerDocCTRL(req, res, next) {
   }
 }
 
-// export async function loginDocCTRL(req, res, next) {}
-
 ///////////////////////////////////////////////////////////////
 
 export async function registerUserCTRL(req, res, next) {
-  console.log(username, password);
   try {
     const doc = await findUserByUser(username);
     if (doc) {
@@ -44,13 +44,39 @@ export async function registerUserCTRL(req, res, next) {
     }
     const hashPassword = await bcrypt.hash(password, 5);
     const newUser2 = await createNewUser(username, hashPassword);
-    console.log(newUser2);
     res.status(201).json({
       message: "Register Success",
       user: {
         id: newUser2.id,
         username: newUser2.username,
         password: newUser2.password,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////
+export async function loginController(req, res, next) {
+  const { username, password } = req.body;
+  console.log(req.body);
+  try {
+    const user = await findUserByUname(username);
+    console.log(user);
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!user || !isMatch) {
+      throw createError(401, "Invalid credentials");
+    }
+    const token = await createToken(user);
+    res.status(201).json({
+      message: "Login Success",
+      token: token,
+      user: {
+        username: user.username,
+        password: user.password,
       },
     });
   } catch (error) {
